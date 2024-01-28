@@ -7,15 +7,14 @@ class MqttClientHandler():
     self.client_id = "home_control"
     self.clean_session = None # This is contingent on qos being 0
     self.user_data = None # I could probably use this to store stuff for calll backs, maybe the last updated status of each device?
-    self.user_name = None
-    self.user_password = None
+    self.broker_username = None
+    self.broker_password = None
     self.broker_ip_address = None
     self.broker_port_number = None
-    self.broker_keep_alive = 60
-    
-    
+    self.broker_keep_alive = None
     
   def connect(self):
+    
     """
       I dont want to just recreate the connect method. I need it to do something specific 
       for my application. If this "handles" connection, then on connect, it should be given
@@ -28,23 +27,23 @@ class MqttClientHandler():
       
       I think configure_client should have a way to changee client_id,
       clean_session, and change user_data. 
-      
-      
-      
     """
+    
     self.client.username_pw_set(self.user_name, self.user_password)
     self.client.user_data_set(self.user_data)
     self.client.connect_async(self.broker_ip_address, port=self.broker_port_number, keepalive=self.broker_keep_alive)
     self.client.loop_start() # on_connect() will be called once this is successful here. 
     self.client.on_connect = self.on_connect
     """
-      "loop_start()
-      loop_stop(force=False)
-      
-      These functions implement a threaded interface to the network loop. Calling loop_start() once, 
-      before or after connect*(), runs a thread in the background to call loop() automatically. 
-      This frees up the main thread for other work that may be blocking. This call also handles 
-      reconnecting to the broker. Call loop_stop() to stop the background thread. The force argument is currently ignored."
+      "
+        loop_start()
+        loop_stop(force=False)
+        
+        These functions implement a threaded interface to the network loop. Calling loop_start() once, 
+        before or after connect*(), runs a thread in the background to call loop() automatically. 
+        This frees up the main thread for other work that may be blocking. This call also handles 
+        reconnecting to the broker. Call loop_stop() to stop the background thread. The force argument is currently ignored.
+      "
       
       Thay being said then, I need a way to stop the loops after so many failed attempts at connecting or reconnecting. 
 
@@ -68,19 +67,17 @@ class MqttClientHandler():
             5: Connection refused - not authorised
             6-255: Currently unused.
       """
-    
-    
-
   
-  def configure_client(self, id, broker_ip_address, broker_port, clean_session=True):
+  def configure_client(self, id, ip_address, broker_port, keep_alive = 60, clean_session=True):
     self.client_id = id
     self.clean_session = clean_session
-    self.broker_ip_address = broker_ip_address
+    self.broker_ip_address = ip_address
     self.broker_port_number = broker_port
+    self.broker_keep_alive = keep_alive
   
-  def configure_user(self, user_name, password):
-    self.user_name = user_name
-    self.user_password = password
+  def configure_user(self, username, password):
+    self.broker_username = username
+    self.broker_password = password
 
   
   
