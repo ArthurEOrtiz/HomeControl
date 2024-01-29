@@ -24,9 +24,9 @@ class Application:
     config_values = self.device_config.load_configuration()
     if config_values:
       device_office_hostname, device_office_ip_address, device_kitchen_hostname, device_kitchen_ip_address = config_values
-      self.mqtt_device_handler.configure_device_handler(
-        [Device(device_office_hostname, device_office_ip_address, "officeLight"), 
-         Device(device_kitchen_hostname, device_kitchen_ip_address, "kitchenLight")])
+      self.mqtt_device_handler.add_devices(
+        [Device(device_office_hostname, device_office_ip_address, "Office Light"), 
+        Device(device_kitchen_hostname, device_kitchen_ip_address, "Kitchen Light")])
       
     # Now that the device handler has the devices. We can have the clien start subscribing to the devices
       
@@ -34,6 +34,8 @@ class Application:
   def initialize(self):
     self.configure()
     self.mqtt_client_handler.connect()
+    deviceCount = self.mqtt_device_handler.count_devices()
+    logging.info(f"Device count: {deviceCount}")
     #subscribe to the list of devices
     #self.mqtt_client_handler.subscribe_to_devices()
     

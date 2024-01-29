@@ -9,6 +9,9 @@ class MqttDeviceHandler:
   def add_device(self, device):
     self.devices.append(device)
     
+  def count_devices(self):
+    return len(self.devices)
+    
   def remove_device(self, device):
     self.devices.remove(device)
     
@@ -18,7 +21,7 @@ class MqttDeviceHandler:
         return device.topics
     return None
   
-  def configure_device_handler(self, devices):
+  def add_devices(self, devices):
     for device in devices:
       self.add_device(device)
   
