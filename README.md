@@ -13,6 +13,11 @@
   - Mqtt
   - Shelly RGBW2
 
+# Limitations 
+  Since the first devices are just light controllers, I've settled on 
+  using Qos>0. I dont care to hold onto the session or ask much of the 
+  server or broker. 
+
 
 
 
