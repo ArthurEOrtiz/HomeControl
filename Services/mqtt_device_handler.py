@@ -1,33 +1,32 @@
-class MQTTDeviceManager:
+from Models.device import Device
+from Config.device_config import DeviceConfig
+
+class MqttDeviceHandler:
   def __init__(self):
     self.devices = []
-
+    
   def add_device(self, device):
     self.devices.append(device)
     
+  def add_devices(self, devices):
+    for device in devices:
+      self.add_device(device)
+    
+  def count_devices(self):
+    return len(self.devices)
+    
   def remove_device(self, device):
     self.devices.remove(device)
-
-  def get_device_count(self):
-    return len(self.devices)
-
-  def get_all_devices(self):
-    return self.devices
     
-  class Device:
-    def __init__(self, name, id, status):
-      self.name = name
-      self.id = id
-      self.status = status
-    def get_name(self):
-      return self.name
-    def get_id(self):
-      return self.id
-    def get_status(self):
-      return self.status
-    def set_name(self, name):
-      self.name = name
-    def set_id(self, id):
-      self.id = id
-    def set_status(self, status):
-      self.status = status
+  def return_device_topics(self, device_id):
+    for device in self.devices:
+      if device.id == device_id:
+        return device.topics
+    return None
+  
+  
+  
+    
+
+    
+
