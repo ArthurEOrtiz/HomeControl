@@ -1,6 +1,6 @@
 class MqttDeviceHandler:
   def __init__(self):
-    self.devices = set()
+    self.devices = {}
     
   def add_device(self, device):
     self.devices[device.id] = device
@@ -22,9 +22,8 @@ class MqttDeviceHandler:
     else:
       raise Exception(f"Device with id {device_id} not found.")
   
-   
-  
-  
+  def return_initial_subscription_topics(self):
+    
   
   
   
