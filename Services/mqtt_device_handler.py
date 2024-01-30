@@ -1,12 +1,9 @@
-from Models.device import Device
-from Config.device_config import DeviceConfig
-
 class MqttDeviceHandler:
   def __init__(self):
-    self.devices = []
+    self.devices = {}
     
   def add_device(self, device):
-    self.devices.append(device)
+    self.devices[device.id] = device
     
   def add_devices(self, devices):
     for device in devices:
@@ -16,13 +13,19 @@ class MqttDeviceHandler:
     return len(self.devices)
     
   def remove_device(self, device):
-    self.devices.remove(device)
+    del self.devices[device.id]
     
-  def return_device_topics(self, device_id):
-    for device in self.devices:
-      if device.id == device_id:
-        return device.topics
-    return None
+  def set_device_topic(self, device_id, topic):
+    device = self.devices.get(device_id)
+    if device:
+      device.add_topic(topic)
+    else:
+      raise Exception(f"Device with id {device_id} not found.")
+  
+   
+  
+  
+  
   
   
   
