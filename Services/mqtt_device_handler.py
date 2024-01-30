@@ -1,6 +1,6 @@
 class MqttDeviceHandler:
   def __init__(self):
-    self.devices = {}
+    self.devices = set()
     
   def add_device(self, device):
     self.devices[device.id] = device
