@@ -4,10 +4,13 @@ from Config.device_config import DeviceConfig
 class MqttDeviceHandler:
   def __init__(self):
     self.devices = []
-
     
   def add_device(self, device):
     self.devices.append(device)
+    
+  def add_devices(self, devices):
+    for device in devices:
+      self.add_device(device)
     
   def count_devices(self):
     return len(self.devices)
@@ -21,9 +24,7 @@ class MqttDeviceHandler:
         return device.topics
     return None
   
-  def add_devices(self, devices):
-    for device in devices:
-      self.add_device(device)
+  
   
     
 

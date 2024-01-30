@@ -1,46 +1,38 @@
 import logging
-from Config.logging_config import log_attributes
 import paho.mqtt.client as mqtt
 
 class MqttClientHandler():
   def __init__(self):
-    self.client = mqtt.Client()
     self.client_id = None
-    self.clean_session = None 
-    self.client.on_connect = self.on_connect
-    self.client.on_message = self.on_message
-    self.client.on_disconnect = self.on_disconnect
+    self.clean_session = None
     self.user_data = None # client offers this, might use it later for callbacks.
+    self.client = None
+    
     self.broker_username = None
     self.broker_password = None
     self.broker_ip_address = None
     self.broker_port_number = None
     self.keep_alive = None
     
-  def connect(self):
+  def initialize_client(self):
+    self.client = mqtt.Client(self.client_id, self.clean_session, self.user_data)
+    self.client.on_connect = self.on_connect
+    self.client.on_message = self.on_message
+    self.client.on_disconnect = self.on_disconnect
     
+  def connect(self):
     """
       I dont want to just recreate the connect method. I need it to do something specific 
-      for my application. If this "handles" connection, then on connect, it should be given
-      what it needs to configure the client, then start up the client, and then inform the parent
-      class that it has successfully connected and running. 
-      
-      So far when this class is initiated the client, client_id, clean_session, and user_data
-      are set to there initial values. We also need username and password, the IP address,
-      and the port number. How would i pass username and password into this?
-      
-      I think configure_client should have a way to changee client_id,
-      clean_session, and change user_data. 
+      for my application. If this "handles" connection, then on connect, it should set the username
+      and password, 
     """
-    
     self.client.username_pw_set(self.broker_username, self.broker_password)
     self.client.user_data_set(self.user_data)
     logging.info("Connecting to broker.")
     self.client.connect_async(self.broker_ip_address, port=self.broker_port_number, keepalive=self.keep_alive)
     #TODO: I need to figure out how to handle a situation where the client fails to connect.
-    #      For example, what if it takes forever to connect?
+
     self.client.loop_start()
-    
     """
       "
         loop_start()
@@ -97,10 +89,6 @@ class MqttClientHandler():
       logging.info(f"Userdata: {userdata}")
       logging.info(f"Flags: {flags}")
       logging.info(f"Reason Code: {rc}")
-      '''
-        I need to tell this class what to subscribe to.
-      '''
-      self.client.subscribe("#")
       
   def on_message(self, client, userdata, message):
     """
@@ -112,7 +100,7 @@ class MqttClientHandler():
       
 
   def disconnect(self): 
-    print("Disconnecting from broker.")
+    logging.info("Disconnecting from broker.")
     self.client.loop_stop()
     self.client.disconnect()
   
@@ -122,12 +110,12 @@ class MqttClientHandler():
       qos 0 and clean_session=True. but if that ever changes this
       will be important.
     """
-    print("Disconnected from broker.")
-    print(f"Paho Client:\n{client.__dict__}")
-    print(f"Userdata: {userdata}")
-    print(f"Reason code: {rc}")
+    logging.info("Disconnected from broker.")
+    logging.info(f"Paho Client:\n{client.__dict__}")
+    logging.info(f"Userdata: {userdata}")
+    logging.info(f"Reason code: {rc}")
   
-  def configure_client(self, id='', userdata = None, keep_alive = 60, clean_session=True):
+  def configure_client(self, id='HomeControl', userdata = None, keep_alive = 60, clean_session=True):
     self.client_id = id
     self.user_data = userdata
     self.keep_alive = keep_alive
