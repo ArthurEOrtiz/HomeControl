@@ -21,10 +21,21 @@ class MqttDeviceHandler:
       device.add_topic(topic)
     else:
       raise Exception(f"Device with id {device_id} not found.")
-  
-  def return_initial_subscription_topics(self):
     
-  
+  def get_all_device_topics(self):
+    topics = []
+    for device_id, device in self.devices.items():
+        for topic_type, topic_list in device.topics.items():
+            for topic in topic_list:
+                topics.append(topic.string)
+    return topics
+    
+  def add_common_topic_to_all_device(self, topic_type, topic_string):
+    for device_id, device in self.devices.items():
+      full_topic_string = f"shellies/{device_id}/{topic_string}"
+      device.add_topic(topic_type, full_topic_string)
+      
+
   
   
   
