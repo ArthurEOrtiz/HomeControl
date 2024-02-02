@@ -1,12 +1,8 @@
 import logging
-import asyncio
 import paho.mqtt.client as mqtt
 
 class MqttClientHandler():
   def __init__(self):
-    self.connected = False
-    self.connected_event = asyncio.Event()
-    
     self.client_id = None
     self.clean_session = None
     self.user_data = None # client offers this, might use it later for callbacks.
@@ -24,7 +20,7 @@ class MqttClientHandler():
     self.client.on_message = self.on_message
     self.client.on_disconnect = self.on_disconnect
     
-  async def connect(self):
+  def connect(self):
     """
       I dont want to just recreate the connect method. I need it to do something specific 
       for my application. If this "handles" connection, then on connect, it should set the username
@@ -33,10 +29,8 @@ class MqttClientHandler():
     self.client.username_pw_set(self.broker_username, self.broker_password)
     self.client.user_data_set(self.user_data)
     logging.info("Connecting to broker.")
-    self.client.connect_async(self.broker_ip_address, port=self.broker_port_number, keepalive=self.keep_alive)
-    #TODO: I need to figure out how to handle a situation where the client fails to connect.
+    self.client.connect(self.broker_ip_address, port=self.broker_port_number, keepalive=self.keep_alive)
     self.client.loop_start()
-    await self.connected_event.wait()
     """
       "
         loop_start()
@@ -52,7 +46,7 @@ class MqttClientHandler():
 
     """
     
-  async def on_connect(self, client, userdata, flags, rc):
+  def on_connect(self, client, userdata, flags, rc):
     """
       This is the callback for when the client receives a CONNACK response from the server.
       
@@ -88,15 +82,11 @@ class MqttClientHandler():
         If the Client supplies a zero-byte ClientId, the Client 
         MUST also set CleanSession to 1" [MQTT-3.1.3-7].
       """
-      self.connected_event.set()
-      self.connected = True
       logging.info("Connected to broker.")
       logging.info(f"Paho Client:\n {client.__dict__}")
       logging.info(f"Userdata: {userdata}")
       logging.info(f"Flags: {flags}")
       logging.info(f"Reason Code: {rc}")
-      
-      
       
   def on_message(self, client, userdata, message):
     """
@@ -108,13 +98,8 @@ class MqttClientHandler():
       
   def subscribe(self, topic="#", qos=0, options=None):
     # options is for MQTTv5, so like dont mess with it. 
-    if self.connected:
-      logging.info(f"Subscribing to {topic}, qos={qos}") 
-      self.client.subscribe(topic, qos, options)
-    else:
-      # I wonder if i can just have this wait until it's connected?
-      logging.warning("Client is not connected. Cannot subscribe to topic.")
-      
+    logging.info(f"Subscribing to {topic}, qos={qos}") 
+    self.client.subscribe(topic, qos, options)
   
   def subscribe_to_topics(self, topics):
     for topic in topics:
@@ -148,16 +133,3 @@ class MqttClientHandler():
     self.broker_password = password
     self.broker_ip_address = ip_address
     self.broker_port_number = broker_port
-  
-    
-
-  
-    
-      
-    
-    
-    
-    
-    
-    
-    

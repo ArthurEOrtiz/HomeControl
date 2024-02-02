@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from config import ConfigurationManager
 from Services.mqtt_client_handler import MqttClientHandler
@@ -26,11 +25,10 @@ class Application:
     '''
     self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
     topics = self.mqtt_device_handler.get_all_device_topics()
-    #self.mqtt_client_handler.subscribe_to_topics(topics)
-    self.mqtt_client_handler.subscribe()
+    self.mqtt_client_handler.subscribe_to_topics(topics)
+    #self.mqtt_client_handler.subscribe()
 
   def run_tasks(self):
-    
     while True:
       
       # Your Application tasks go here
@@ -48,28 +46,19 @@ class Application:
     logging.info("Stopping.")
     exit(0)
     
-    
-async def main():
+def main():
   app = Application()
   try:
     app.config()
-    
-    #Create an event loop 
-    loop = asyncio.get_event_loop()
-    
-    # Schedule the initialize methos as a coroutine in the event loop 
-    await loop.run_in_executor(None, app.initialize)
-    
-    #Run the event loop for the run_tasks method
-    await loop.run_in_executor(None, app.run_tasks)
-    
+    app.initialize()
+    app.run_tasks()
   except Exception as e:
     logging.error(f"Error: {e}")
   except KeyboardInterrupt:
-    print("Keyboard interrupt detected.")
+    logging.warning("Keyboard interrupt detected.")
   finally:
-    await loop.run_in_executor(None, app.cleanup)
-    await loop.run_in_executor(None, app.stop)
+    app.cleanup()
+    app.stop()
   
 if __name__ == "__main__":
-  asyncio.run(main())
+  main()
