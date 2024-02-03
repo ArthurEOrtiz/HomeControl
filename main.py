@@ -17,20 +17,25 @@ class Application:
   def initialize(self):
     self.mqtt_client_handler.initialize_client()  
     self.mqtt_client_handler.connect()
-    
     '''
       At this point, the application is connected to the broker,
       and we have 2 devices loaded into the device handler. 
       So now I either have to load those devices with some topics 
       programmatically, or hardcode that in for now. 
     '''
-    
+    self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
+    topics = self.mqtt_device_handler.get_all_device_topics()
+    self.mqtt_client_handler.subscribe_to_topics(topics)
+    #self.mqtt_client_handler.subscribe()
+
   def run_tasks(self):
     while True:
+      
       # Your Application tasks go here
       # Application tasks are run in a loop in the main thread
       # These tasks could include processing incoming messages, 
       # handling user input, performing background calculations, etc.
+      # The loop will run until the application is stopped.
       pass
   
   def cleanup(self):
@@ -41,8 +46,7 @@ class Application:
     logging.info("Stopping.")
     exit(0)
     
-if __name__ == "__main__":
-  
+def main():
   app = Application()
   try:
     app.config()
@@ -51,7 +55,10 @@ if __name__ == "__main__":
   except Exception as e:
     logging.error(f"Error: {e}")
   except KeyboardInterrupt:
-    print("Keyboard interrupt detected.")
+    logging.warning("Keyboard interrupt detected.")
   finally:
     app.cleanup()
     app.stop()
+  
+if __name__ == "__main__":
+  main()

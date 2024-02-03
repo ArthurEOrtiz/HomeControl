@@ -29,9 +29,7 @@ class MqttClientHandler():
     self.client.username_pw_set(self.broker_username, self.broker_password)
     self.client.user_data_set(self.user_data)
     logging.info("Connecting to broker.")
-    self.client.connect_async(self.broker_ip_address, port=self.broker_port_number, keepalive=self.keep_alive)
-    #TODO: I need to figure out how to handle a situation where the client fails to connect.
-
+    self.client.connect(self.broker_ip_address, port=self.broker_port_number, keepalive=self.keep_alive)
     self.client.loop_start()
     """
       "
@@ -98,6 +96,15 @@ class MqttClientHandler():
     logging.info(f"\tTopic: {message.topic}")
     logging.info(f"\tPayload:{message.payload.decode()}")
       
+  def subscribe(self, topic="#", qos=0, options=None):
+    # options is for MQTTv5, so like dont mess with it. 
+    logging.info(f"Subscribing to {topic}, qos={qos}") 
+    self.client.subscribe(topic, qos, options)
+  
+  def subscribe_to_topics(self, topics):
+    for topic in topics:
+      logging.info(f"Subscribing to {topic}")
+      self.client.subscribe(topic)
 
   def disconnect(self): 
     logging.info("Disconnecting from broker.")
@@ -115,7 +122,7 @@ class MqttClientHandler():
     logging.info(f"Userdata: {userdata}")
     logging.info(f"Reason code: {rc}")
   
-  def configure_client(self, id='HomeControl', userdata = None, keep_alive = 60, clean_session=True):
+  def configure_client(self, id='', userdata = None, keep_alive = 60, clean_session=True):
     self.client_id = id
     self.user_data = userdata
     self.keep_alive = keep_alive
@@ -126,16 +133,3 @@ class MqttClientHandler():
     self.broker_password = password
     self.broker_ip_address = ip_address
     self.broker_port_number = broker_port
-  
-    
-
-  
-    
-      
-    
-    
-    
-    
-    
-    
-    
