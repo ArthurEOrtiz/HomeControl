@@ -1,7 +1,6 @@
 import logging
 from config import ConfigurationManager
-from Services.mqtt_client_handler import MqttClientHandler
-from Services.mqtt_device_handler import MqttDeviceHandler
+from Services import MqttClientHandler, MqttDeviceHandler
 
 class Application:
   def __init__(self):

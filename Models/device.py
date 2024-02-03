@@ -1,5 +1,5 @@
 
-from Models.topics import Topic
+from Models import Topic
 
 class Device:
   def __init__(self, id, ip_address, name):
