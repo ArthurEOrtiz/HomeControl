@@ -10,6 +10,7 @@
   - Eclipse Mosquitto 
   - Paho mqtt
   - Python 3
+  - Qt
   - Mqtt 3.1.1
   - Shelly RGBW2
 
