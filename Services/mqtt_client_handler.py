@@ -19,7 +19,14 @@ class MqttClientHandler():
     self.client.on_connect = self.on_connect
     self.client.on_message = self.on_message
     self.client.on_disconnect = self.on_disconnect
+    # self.client.publish = self.client.publish
     
+  def publish(self, data):
+    print(f"Publishing {data}")
+    
+    #logging.info(f"Publishing to {topic} with payload {payload}")
+    #self.client.publish(topic, payload, qos, retain)
+
   def connect(self):
     """
       I dont want to just recreate the connect method. I need it to do something specific 

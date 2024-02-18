@@ -4,6 +4,7 @@ from config import ConfigurationManager
 from PyQt5.QtWidgets import QApplication
 from Services import MqttClientHandler, MqttDeviceHandler
 from ui import MainWindow
+from Controllers import MainWindowController
 
 class Application:
   def __init__(self):
@@ -12,12 +13,19 @@ class Application:
     self.mqtt_client_handler = MqttClientHandler()
     self.mqtt_device_handler = MqttDeviceHandler()
     self.main_window = MainWindow()
+    self.main_window_controller = MainWindowController()
+    
+    self.main_window_controller.main_window.sliderValueChanged.connect(self.handleSliderValueChanged)
     
   def config(self):
     self.configuration.configure(
       self.mqtt_client_handler, 
       self.mqtt_device_handler)  
-      
+  
+  def handleSliderValueChanged(self, red, green, blue):
+    print(f"Red: {red}, Green: {green}, Blue: {blue}")
+    #self.mqtt_device_handler.publish("rgb", f"{red},{green},{blue}") 
+
   def initialize(self):
     self.mqtt_client_handler.initialize_client()  
     self.mqtt_client_handler.connect()
@@ -27,11 +35,13 @@ class Application:
       So now I either have to load those devices with some topics 
       programmatically, or hardcode that in for now. 
     '''
-    self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
-    topics = self.mqtt_device_handler.get_all_device_topics()
-    self.mqtt_client_handler.subscribe_to_topics(topics)
+    #self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
+    #topics = self.mqtt_device_handler.get_all_device_topics()
+    #self.mqtt_client_handler.subscribe_to_topics(topics)
+    #self.main_window.sliderValueChanged.connect(self.mqtt_device_handler.publish)
     
-    self.main_window.show()
+    self.main_window_controller.main_window.show()
+    #self.main_window.show()
     sys.exit(self.app.exec_())
 
   def run_tasks(self):
@@ -57,9 +67,6 @@ def main():
   try:
     app.config()
     app.initialize()
-    #app.main_window.show()
-    # app.run_tasks()
-    
   except Exception as e:
     logging.error(f"Error: {e}")
   except KeyboardInterrupt:
