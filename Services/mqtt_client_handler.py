@@ -29,6 +29,9 @@ class MqttClientHandler():
     self.client.username_pw_set(self.broker_username, self.broker_password)
     self.client.user_data_set(self.user_data)
     logging.info("Connecting to broker.")
+    logging.info(f"Broker IP: {self.broker_ip_address}")
+    logging.info(f"Broker Port: {self.broker_port_number}")
+    logging.info(f"Keep Alive: {self.keep_alive}")
     self.client.connect(self.broker_ip_address, port=self.broker_port_number, keepalive=self.keep_alive)
     self.client.loop_start()
     """
