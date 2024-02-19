@@ -19,13 +19,12 @@ class MqttClientHandler():
     self.client.on_connect = self.on_connect
     self.client.on_message = self.on_message
     self.client.on_disconnect = self.on_disconnect
-    # self.client.publish = self.client.publish
     
-  def publish(self, data):
-    print(f"Publishing {data}")
     
-    #logging.info(f"Publishing to {topic} with payload {payload}")
-    #self.client.publish(topic, payload, qos, retain)
+  def publish(self, topic, payload):
+    self.client.publish(topic, payload, qos=0, retain=False)
+    logging.info(f"\n\nPUBLISHING\n\tTopic   {topic}\n\tPayload {payload}\n")
+    
 
   def connect(self):
     """
@@ -102,9 +101,8 @@ class MqttClientHandler():
     """
       The callback for when a PUBLISH message is received from the server.
     """
-    logging.info("****Message received.****")
-    logging.info(f"\tTopic: {message.topic}")
-    logging.info(f"\tPayload:{message.payload.decode()}")
+    logging.info(f"\n\t****Message received.****\n\tTopic: {message.topic}\n\tPayload:{message.payload.decode()}\n")
+  
       
   def subscribe(self, topic="#", qos=0, options=None):
     # options is for MQTTv5, so like dont mess with it. 

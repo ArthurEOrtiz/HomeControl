@@ -1,5 +1,12 @@
-class MqttDeviceHandler:
+from PyQt5.QtCore import QObject, pyqtSignal
+
+from Models.rgb import RGB
+class MqttDeviceHandler(QObject):
+  topic_message = pyqtSignal(str, str)  
+  
+  
   def __init__(self):
+    super().__init__()
     self.devices = {}
     
   def add_device(self, device):
@@ -34,6 +41,11 @@ class MqttDeviceHandler:
     for device_id, device in self.devices.items():
       full_topic_string = f"shellies/{device_id}/{topic_string}"
       device.add_topic(topic_type, full_topic_string)
+      
+  def handle_slider_update(self, message):
+    topic = 'shellies/shellyrgbw2-2C696B/color/0/set'
+    message = f'{{{message.__str__()} "white": 0, "gain": 100}}'
+    self.topic_message.emit(topic, message)
       
 
   
