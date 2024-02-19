@@ -20,11 +20,9 @@ class MqttClientHandler():
     self.client.on_message = self.on_message
     self.client.on_disconnect = self.on_disconnect
     
-    
   def publish(self, topic, payload):
     self.client.publish(topic, payload, qos=0, retain=False)
-    logging.info(f"\n\nPUBLISHING\n\tTopic   {topic}\n\tPayload {payload}\n")
-    
+    #logging.info(f"\n\nPUBLISHING\n\tTopic   {topic}\n\tPayload {payload}\n")
 
   def connect(self):
     """
@@ -103,7 +101,6 @@ class MqttClientHandler():
     """
     logging.info(f"\n\t****Message received.****\n\tTopic: {message.topic}\n\tPayload:{message.payload.decode()}\n")
   
-      
   def subscribe(self, topic="#", qos=0, options=None):
     # options is for MQTTv5, so like dont mess with it. 
     logging.info(f"Subscribing to {topic}, qos={qos}") 
@@ -126,8 +123,8 @@ class MqttClientHandler():
       will be important.
     """
     logging.info("Disconnected from broker.")
-    logging.info(f"Paho Client:\n{client.__dict__}")
-    logging.info(f"Userdata: {userdata}")
+    # logging.info(f"Paho Client:\n{client.__dict__}")
+    # logging.info(f"Userdata: {userdata}")
     logging.info(f"Reason code: {rc}")
   
   def configure_client(self, id='', userdata = None, keep_alive = 60, clean_session=True):

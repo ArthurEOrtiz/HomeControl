@@ -13,10 +13,6 @@ class MainWindowController(QObject):
     def handleSliderValueChanged(self, red, green, blue):
         rgb_object = RGB(red, green, blue)  
         self.onsliderValueChanged.emit(rgb_object)
-        '''
-        So i have the message string now i need to combine this with a device id and topic
-        and publish this to the broker.
-        '''
 
         
         

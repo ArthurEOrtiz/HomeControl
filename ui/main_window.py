@@ -4,8 +4,8 @@ from PyQt5.QtCore import Qt, pyqtSignal
 class MainWindow(QMainWindow):
     sliderValueChanged = pyqtSignal(int, int, int)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
 
         self.setWindowTitle("Home Control")
 

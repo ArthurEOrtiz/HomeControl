@@ -14,18 +14,10 @@ class Application:
     self.mqtt_device_handler = MqttDeviceHandler()
     self.main_window_controller = MainWindowController()
     
-    
-    
   def config(self):
     self.configuration.configure(
       self.mqtt_client_handler, 
       self.mqtt_device_handler)  
-
-    
-  def printRGBobject(self, RGBobject):
-    print(RGBobject)
-    
-    
 
   def initialize(self):
     self.mqtt_client_handler.initialize_client()  
