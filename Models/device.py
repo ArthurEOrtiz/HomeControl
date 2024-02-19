@@ -1,6 +1,3 @@
-
-from Models.topics import Topic
-
 class Device:
   def __init__(self, id, ip_address, name):
     self.id = id # device id, what identitfeis the device to the topic
@@ -11,6 +8,7 @@ class Device:
     self.payloads = {} # a dictionary of payloads that the device uses for communication
     
   def add_topic(self, topic_type, topic_string):
+    from Models import Topic
     if topic_type not in self.topics:
       self.topics[topic_type] = []
     self.topics[topic_type].append(Topic(topic_type, topic_string))   

@@ -20,6 +20,10 @@ class MqttClientHandler():
     self.client.on_message = self.on_message
     self.client.on_disconnect = self.on_disconnect
     
+  def publish(self, topic, payload):
+    self.client.publish(topic, payload, qos=0, retain=False)
+    #logging.info(f"\n\nPUBLISHING\n\tTopic   {topic}\n\tPayload {payload}\n")
+
   def connect(self):
     """
       I dont want to just recreate the connect method. I need it to do something specific 
@@ -29,6 +33,9 @@ class MqttClientHandler():
     self.client.username_pw_set(self.broker_username, self.broker_password)
     self.client.user_data_set(self.user_data)
     logging.info("Connecting to broker.")
+    logging.info(f"Broker IP: {self.broker_ip_address}")
+    logging.info(f"Broker Port: {self.broker_port_number}")
+    logging.info(f"Keep Alive: {self.keep_alive}")
     self.client.connect(self.broker_ip_address, port=self.broker_port_number, keepalive=self.keep_alive)
     self.client.loop_start()
     """
@@ -92,10 +99,8 @@ class MqttClientHandler():
     """
       The callback for when a PUBLISH message is received from the server.
     """
-    logging.info("****Message received.****")
-    logging.info(f"\tTopic: {message.topic}")
-    logging.info(f"\tPayload:{message.payload.decode()}")
-      
+    logging.info(f"\n\t****Message received.****\n\tTopic: {message.topic}\n\tPayload:{message.payload.decode()}\n")
+  
   def subscribe(self, topic="#", qos=0, options=None):
     # options is for MQTTv5, so like dont mess with it. 
     logging.info(f"Subscribing to {topic}, qos={qos}") 
@@ -118,8 +123,8 @@ class MqttClientHandler():
       will be important.
     """
     logging.info("Disconnected from broker.")
-    logging.info(f"Paho Client:\n{client.__dict__}")
-    logging.info(f"Userdata: {userdata}")
+    # logging.info(f"Paho Client:\n{client.__dict__}")
+    # logging.info(f"Userdata: {userdata}")
     logging.info(f"Reason code: {rc}")
   
   def configure_client(self, id='', userdata = None, keep_alive = 60, clean_session=True):

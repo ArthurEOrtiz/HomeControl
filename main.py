@@ -1,19 +1,24 @@
 import logging
+import sys
 from config import ConfigurationManager
-from Services.mqtt_client_handler import MqttClientHandler
-from Services.mqtt_device_handler import MqttDeviceHandler
+from PyQt5.QtWidgets import QApplication
+from Services import MqttClientHandler, MqttDeviceHandler
+from Controllers import MainWindowController
+
 
 class Application:
   def __init__(self):
+    self.app = QApplication(sys.argv)
     self.configuration = ConfigurationManager()
     self.mqtt_client_handler = MqttClientHandler()
     self.mqtt_device_handler = MqttDeviceHandler()
+    self.main_window_controller = MainWindowController()
     
   def config(self):
     self.configuration.configure(
       self.mqtt_client_handler, 
       self.mqtt_device_handler)  
-      
+
   def initialize(self):
     self.mqtt_client_handler.initialize_client()  
     self.mqtt_client_handler.connect()
@@ -23,9 +28,16 @@ class Application:
       So now I either have to load those devices with some topics 
       programmatically, or hardcode that in for now. 
     '''
-    self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
-    topics = self.mqtt_device_handler.get_all_device_topics()
-    self.mqtt_client_handler.subscribe_to_topics(topics)
+    #self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
+    #topics = self.mqtt_device_handler.get_all_device_topics()
+    #self.mqtt_client_handler.subscribe_to_topics(topics)
+    self.mqtt_client_handler.subscribe()
+
+    
+    self.main_window_controller.main_window.show()
+    self.main_window_controller.onsliderValueChanged.connect(self.mqtt_device_handler.handle_slider_update)  
+    self.mqtt_device_handler.topic_message.connect(self.mqtt_client_handler.publish)
+    sys.exit(self.app.exec_())
 
   def run_tasks(self):
     while True:
@@ -50,7 +62,6 @@ def main():
   try:
     app.config()
     app.initialize()
-    app.run_tasks()
   except Exception as e:
     logging.error(f"Error: {e}")
   except KeyboardInterrupt:

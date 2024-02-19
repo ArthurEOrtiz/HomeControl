@@ -1,8 +1,6 @@
 import logging
-from Config.logging_config import configure_logging
-from Config.broker_config import BrokerConfig
-from Config.device_config import DeviceConfig
-from Models.device import Device
+from Configuration import BrokerConfig, DeviceConfig, configure_logging
+from Models import Device
 
 class ConfigurationManager:
   def __init__(self):
