@@ -99,7 +99,8 @@ class MqttClientHandler():
     """
       The callback for when a PUBLISH message is received from the server.
     """
-    logging.info(f"\n\t****Message received.****\n\tTopic: {message.topic}\n\tPayload:{message.payload.decode()}\n")
+    #logging.info(f"\n\t****Message received.****\n\tTopic: {message.topic}\n\tPayload:{message.payload.decode()}\n")
+    pass
   
   def subscribe(self, topic="#", qos=0, options=None):
     # options is for MQTTv5, so like dont mess with it. 
