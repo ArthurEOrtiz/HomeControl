@@ -1,8 +1,8 @@
 import json
 from PyQt5.QtCore import QObject, pyqtSignal
 from Models.rgb import RGB
-from ui import MainWindow
 from Services import MqttClientHandler, MqttDeviceHandler
+from UI import MainWindow
 
 class MainWindowController(QObject):
     onsliderValueChanged = pyqtSignal(RGB)
