@@ -14,6 +14,9 @@ class MqttDeviceHandler(QObject):
   def add_devices(self, devices):
     for device in devices:
       self.add_device(device)
+      
+  def get_device_by_id(self, device_id):
+    return self.devices.get(device_id)
     
   def count_devices(self):
     return len(self.devices)
