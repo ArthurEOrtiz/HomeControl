@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from Models.rgb import RGB
+
 class MqttDeviceHandler(QObject):
   topic_message = pyqtSignal(str, str)  
 
