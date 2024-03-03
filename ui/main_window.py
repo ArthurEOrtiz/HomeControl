@@ -1,8 +1,7 @@
-from PyQt5.QtWidgets import QMainWindow, QSlider, QVBoxLayout, QWidget, QLabel
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget
+from PyQt5.QtCore import pyqtSignal
 from Models.rgb import RGB
 from UI.slider_container import SliderContainer
-from UI.slider_widget import SliderWidget
 
 class MainWindow(QMainWindow):
     sliderValueChanged = pyqtSignal(int, int, int)

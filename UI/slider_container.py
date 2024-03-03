@@ -40,6 +40,6 @@ class SliderContainer(QWidget):
         self.sliderBlue.setValue(blue)
         
     def sliderPressed(self, value):
-      self.isSliderPressed.emit(value)
+        self.isSliderPressed.emit(value)
 
         
