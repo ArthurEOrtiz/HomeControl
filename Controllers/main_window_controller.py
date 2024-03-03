@@ -25,6 +25,7 @@ class MainWindowController(QObject):
         message_topic = f"shellies/{officeDevice.id}/color/0/status"
 
         if message.topic == message_topic:
+            print("Received message: ", message.payload.decode('utf-8'))
             payload = message.payload.decode('utf-8')
             data = json.loads(payload)
             rgb = RGB(data['red'], data['green'], data['blue'])
