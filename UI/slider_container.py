@@ -5,7 +5,7 @@ from UI.slider_widget import SliderWidget
 class SliderContainer(QWidget):
     sliderValue = pyqtSignal(int, int, int)  
     isSliderPressed = pyqtSignal(bool)
-  
+    
     def __init__(self):
         super().__init__()
 
@@ -40,6 +40,6 @@ class SliderContainer(QWidget):
         self.sliderBlue.setValue(blue)
         
     def sliderPressed(self, value):
-      self.isSliderPressed.emit(value)
+        self.isSliderPressed.emit(value)
 
         
