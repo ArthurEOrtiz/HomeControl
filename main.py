@@ -35,8 +35,10 @@ class Application:
 
     
     self.main_window_controller.main_window.show()
-    self.main_window_controller.onsliderValueChanged.connect(self.mqtt_device_handler.handle_slider_update)  
+    
+    
     self.mqtt_device_handler.topic_message.connect(self.mqtt_client_handler.publish)
+    
     sys.exit(self.app.exec_())
 
   def run_tasks(self):

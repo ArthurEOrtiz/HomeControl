@@ -5,7 +5,6 @@ from Services import MqttClientHandler, MqttDeviceHandler
 from UI import MainWindow
 
 class MainWindowController(QObject):
-    onsliderValueChanged = pyqtSignal(RGB)
     
     def __init__(self, client_handler: MqttClientHandler, device_handler: MqttDeviceHandler):
         super().__init__()
@@ -14,12 +13,12 @@ class MainWindowController(QObject):
         self.client_handler.on_message = self.on_message
         self.device_handler = device_handler
         self.main_window.sliderValueChanged.connect(self.handleSliderValueChanged)
+        
 
 
     def handleSliderValueChanged(self, red, green, blue):
         rgb_object = RGB(red, green, blue)  
-        self.onsliderValueChanged.emit(rgb_object)
-
+        self.device_handler.handle_slider_update(rgb_object)
         
     def on_message(self, client, userdata, message):
         officeDevice = self.device_handler.get_device_by_id("shellyrgbw2-2C696B")
