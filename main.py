@@ -28,10 +28,10 @@ class Application:
       So now I either have to load those devices with some topics 
       programmatically, or hardcode that in for now. 
     '''
-    self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
-    topics = self.mqtt_device_handler.get_all_device_topics()
-    self.mqtt_client_handler.subscribe_to_topics(topics)
-    #self.mqtt_client_handler.subscribe()
+    # self.mqtt_device_handler.add_common_topic_to_all_device("subscribe_all", "#")
+    # topics = self.mqtt_device_handler.get_all_device_topics()
+    # self.mqtt_client_handler.subscribe_to_topics(topics)
+    self.mqtt_client_handler.subscribe()
 
     
     self.main_window_controller.main_window.show()
