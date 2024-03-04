@@ -17,6 +17,12 @@ class MqttDeviceHandler(QObject):
       
   def get_device_by_id(self, device_id):
     return self.devices.get(device_id)
+  
+  def get_device_by_name(self, name):
+    for device_id, device in self.devices.items():
+      if device.name == name:
+        return device
+    return None
     
   def count_devices(self):
     return len(self.devices)
@@ -44,8 +50,8 @@ class MqttDeviceHandler(QObject):
       full_topic_string = f"shellies/{device_id}/{topic_string}"
       device.add_topic(topic_type, full_topic_string)
       
-  def handle_slider_update(self, message):
-    topic = 'shellies/shellyrgbw2-2C696B/color/0/set'
+  def handle_slider_update(self,device_hostname, message):
+    topic = f'shellies/{device_hostname}/color/0/set'
     message = f'{{{message.__str__()} "white": 0, "gain": 100}}'
     self.topic_message.emit(topic, message)
       

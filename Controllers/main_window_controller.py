@@ -1,6 +1,6 @@
 import json
-from PyQt5.QtCore import QObject, pyqtSignal
-from Models.rgb import RGB
+from PyQt5.QtCore import QObject
+from Models import RGB, Device
 from Services import MqttClientHandler, MqttDeviceHandler
 from UI import MainWindow
 
@@ -13,27 +13,51 @@ class MainWindowController(QObject):
         self.client_handler.on_message = self.on_message
         self.device_handler = device_handler
         self.main_window.sliderValueChanged.connect(self.handleSliderValueChanged)
+        self.device_handler.topic_message.connect(self.client_handler.publish)
+        self.main_window.selection.connect(self.handleDropdownSelection)
+        self.selected_device : Device = None
+        self.isDeviceUpdated = False
         
-
+    
+    def configure(self):
+        self.selected_device = self.device_handler.get_device_by_name("Office Light")
+        
+    def handleDropdownSelection(self, selected_option):
+        if selected_option == "Office Light":
+            self.isDeviceUpdated = False
+            self.selected_device = self.device_handler.get_device_by_name("Office Light")
+        elif selected_option == "Kitchen Light":
+            self.isDeviceUpdated = False
+            self.selected_device = self.device_handler.get_device_by_name("Kitchen Light")
 
     def handleSliderValueChanged(self, red, green, blue):
-        rgb_object = RGB(red, green, blue)  
-        self.device_handler.handle_slider_update(rgb_object)
+        if self.selected_device is None:
+            print("No device selected.")
+            return
+
+        rgb_object = RGB(red, green, blue) 
+        device_hostname = self.selected_device.id   
+        self.device_handler.handle_slider_update(device_hostname, rgb_object)
         
     def on_message(self, client, userdata, message):
-        officeDevice = self.device_handler.get_device_by_id("shellyrgbw2-2C696B")
-        message_topic = f"shellies/{officeDevice.id}/info"
+        device = self.selected_device
 
+        print("           Topic: ", message.topic)
         print("Received message: ", message.payload.decode('utf-8'))
         
-        if message.topic == message_topic:
-            
+        if message.topic == f"shellies/{device.id}/info":
             payload = message.payload.decode('utf-8')
             data = json.loads(payload)
             light = data['lights'][0]
-            
-            
             rgb = RGB(light['red'], light['green'], light['blue'])
 
             if self.main_window.isSliderPressed == False:
                 self.main_window.updateSliders(rgb)
+                
+        if message.topic == f"shellies/{device.id}/color/0/status" and self.isDeviceUpdated == False:
+            payload = message.payload.decode('utf-8')
+            data = json.loads(payload)
+            rgb = RGB(data['red'], data['green'], data['blue'])
+            if self.main_window.isSliderPressed == False:
+                self.main_window.updateSliders(rgb)
+                self.isDeviceUpdated = True

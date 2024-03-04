@@ -1,18 +1,21 @@
 import logging
 from Configuration import BrokerConfig, DeviceConfig, configure_logging
+from Controllers import MainWindowController
 from Models import Device
+from Services import MqttClientHandler, MqttDeviceHandler
 
 class ConfigurationManager:
   def __init__(self):
-    self.mqtt_client_handler = None
-    self.mqtt_device_handler = None
+    self.mqtt_client_handler : MqttClientHandler = None
+    self.mqtt_device_handler : MqttDeviceHandler = None
+    self.main_window_controller : MainWindowController = None
     self.broker_config = BrokerConfig()
     self.device_config = DeviceConfig()
 
   def configure_logging(self):
     configure_logging()
     logging.info("Logging initialized")
-      
+    
   def configure_mqtt_client(self):
     self.mqtt_client_handler.configure_client()
     config_values = self.broker_config.load_configuration()
@@ -36,10 +39,13 @@ class ConfigurationManager:
         # throw and error, dont break everything, just stop the program or something.
         logging.error("No device configuration found.")
         Exception("No device configuration found.")
+        
           
-  def configure(self, ClientHandler, DeviceHandler):
+  def configure(self, ClientHandler, DeviceHandler, MainWindowController):
     self.mqtt_client_handler = ClientHandler
     self.mqtt_device_handler = DeviceHandler
+    self.main_window_controller = MainWindowController
     self.configure_logging()
     self.configure_mqtt_client()
     self.configure_devices()
+    self.main_window_controller.configure()

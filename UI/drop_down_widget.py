@@ -19,3 +19,6 @@ class DropdownWidget(QWidget):
     def emitSelectionChanged(self, index):
         selected_option = self.comboBox.currentText()
         self.selectionChanged.emit(selected_option)
+    
+    def getSelectedOption(self):
+        return self.comboBox.currentText()

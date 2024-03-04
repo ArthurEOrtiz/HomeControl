@@ -46,3 +46,6 @@ class MainWindow(QMainWindow):
         
     def handleDropdownSelection(self, selected_option):
         self.selection.emit(selected_option)
+        
+    def getDropdownSelection(self):
+        return self.dropdown.getSelectedOption()
