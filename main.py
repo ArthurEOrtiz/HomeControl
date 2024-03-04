@@ -17,8 +17,7 @@ class Application:
   def config(self):
     self.configuration.configure(
       self.mqtt_client_handler, 
-      self.mqtt_device_handler,
-      self.main_window_controller)  
+      self.mqtt_device_handler)  
 
   def initialize(self):
     self.mqtt_client_handler.initialize_client()  
@@ -33,8 +32,8 @@ class Application:
     # topics = self.mqtt_device_handler.get_all_device_topics()
     # self.mqtt_client_handler.subscribe_to_topics(topics)
     
-    self.mqtt_client_handler.subscribe()
-
+    # self.mqtt_client_handler.subscribe()
+    self.main_window_controller.initialize()
     self.main_window_controller.main_window.show()
     
     sys.exit(self.app.exec_())

@@ -19,16 +19,20 @@ class MainWindowController(QObject):
         self.isDeviceUpdated = False
         
     
-    def configure(self):
+    def initialize(self):
         self.selected_device = self.device_handler.get_device_by_name("Office Light")
+        if self.client_handler.client is not None:
+            self.client_handler.subscribe(f"shellies/{self.selected_device.id}/#")
         
     def handleDropdownSelection(self, selected_option):
+        self.client_handler.unsubscribe(f"shellies/{self.selected_device.id}/#")
         if selected_option == "Office Light":
             self.isDeviceUpdated = False
             self.selected_device = self.device_handler.get_device_by_name("Office Light")
         elif selected_option == "Kitchen Light":
             self.isDeviceUpdated = False
             self.selected_device = self.device_handler.get_device_by_name("Kitchen Light")
+        self.client_handler.subscribe(f"shellies/{self.selected_device.id}/#")
 
     def handleSliderValueChanged(self, red, green, blue):
         if self.selected_device is None:

@@ -1,8 +1,6 @@
 
 .env
 application.log
-ui/__pycache__/__init__.cpython-312.pyc
 *.pyc
-*.pyc
-*.pyc
-*.pyc
+__pycache__/config.cpython-312.pyc
+Services/__pycache__/mqtt_client_handler.cpython-312.pyc

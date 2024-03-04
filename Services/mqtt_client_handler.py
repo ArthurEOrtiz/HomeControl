@@ -112,10 +112,15 @@ class MqttClientHandler():
       logging.info(f"Subscribing to {topic}")
       self.client.subscribe(topic)
 
+  def unsubscribe(self, topic):
+    logging.info(f"Unsubscribing from {topic}")
+    self.client.unsubscribe(topic)
+    
   def disconnect(self): 
     logging.info("Disconnecting from broker.")
-    self.client.loop_stop()
-    self.client.disconnect()
+    if self.client is not None:
+        self.client.loop_stop()
+        self.client.disconnect()
   
   def on_disconnect(self, client, userdata, rc):
     """ 
