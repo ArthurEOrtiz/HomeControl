@@ -15,6 +15,8 @@ class MainWindowController(QObject):
         self.main_window.sliderValueChanged.connect(self.handleSliderValueChanged)
         self.device_handler.topic_message.connect(self.client_handler.publish)
         self.main_window.selection.connect(self.handleDropdownSelection)
+        self.main_window.turnOnDevice.connect(self.turn_on_device)
+        self.main_window.turnOffDevice.connect(self.turn_off_device)
         self.selected_device : Device = None
         self.isDeviceUpdated = False
         
@@ -65,3 +67,10 @@ class MainWindowController(QObject):
             if self.main_window.isSliderPressed == False:
                 self.main_window.updateSliders(rgb)
                 self.isDeviceUpdated = True
+    
+    def turn_on_device(self):
+        self.client_handler.publish(f"shellies/{self.selected_device.id}/color/0/set", '{"turn": "on" }')
+    
+    def turn_off_device(self):
+        self.client_handler.publish(f"shellies/{self.selected_device.id}/color/0/set", '{"turn": "off" }')
+
